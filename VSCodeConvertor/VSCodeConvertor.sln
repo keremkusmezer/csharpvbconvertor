@@ -5,9 +5,11 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CodeConvert", "CodeConvert\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRefactory", "NRefactory\NRefactory.csproj", "{3A9AE6AA-BC07-4A2F-972C-581E3AE2F195}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "CodeConvertSetup", "CodeConvertSetup\CodeConvertSetup.vdproj", "{0BD0C307-E4D1-4D82-B687-665D8668363A}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
+		SccNumberOfProjects = 4
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs06.codeplex.com/
 		SccLocalPath0 = .
@@ -17,6 +19,9 @@ Global
 		SccProjectUniqueName2 = NRefactory\\NRefactory.csproj
 		SccProjectName2 = NRefactory
 		SccLocalPath2 = NRefactory
+		SccProjectUniqueName3 = CodeConvertSetup\\CodeConvertSetup.vdproj
+		SccProjectName3 = CodeConvertSetup
+		SccLocalPath3 = CodeConvertSetup
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +36,8 @@ Global
 		{3A9AE6AA-BC07-4A2F-972C-581E3AE2F195}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A9AE6AA-BC07-4A2F-972C-581E3AE2F195}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A9AE6AA-BC07-4A2F-972C-581E3AE2F195}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BD0C307-E4D1-4D82-B687-665D8668363A}.Debug|Any CPU.ActiveCfg = Debug
+		{0BD0C307-E4D1-4D82-B687-665D8668363A}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
