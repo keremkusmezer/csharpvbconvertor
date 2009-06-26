@@ -48,8 +48,8 @@
     <Compile Include="AddInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Class1.cs" />
-    <Compile Include="CodeFile1.cs" />
+    <Compile Include="CreateThread.cs" />
+    <Compile Include="LockedFileDetector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
