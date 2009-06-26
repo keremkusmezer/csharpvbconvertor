@@ -1,0 +1,11 @@
+﻿http://msmvps.com/blogs/carlosq/archive/2009/01.aspx
+Default Addin Locations For Visual Studio Addins
+http://www.mztools.com/articles/2008/MZ2008001.aspx
+%ALLUSERSPROFILE%\Application Data\Microsoft\MSEnvShared\AddIns (notice that "Application Data" is hardcoded, which shouldn't because Windows XP localizes that folder)
+Examples:
+- Windows XP: "C:\Documents and Settings\All Users\Application Data\Microsoft\MSEnvShared\AddIns"
+- Windows Vista: "C:\ProgramData\Microsoft\MSEnvShared\AddIns"
+How to get it:
+- Windows XP: replace the %ALLUSERSPROFILE% placeholder, append it "Application Data" (even in non-English versions of Windows XP) and then append "\Microsoft\MSEnvShared\AddIns". Do not use CSIDL_COMMON_APPDATA because it would return "C:\Documents and Settings\All Users\Datos de programa" in Spanish , for example, and Visual Studio will not search in that folder. 
+- Windows Vista: use CSIDL_COMMON_APPDATA and then append "\Microsoft\MSEnvShared\AddIns". Notice that Windows Vista uses a junction point (a new feature of Windows Vista that is a hidden pointer to a folder) from "C:\Users\All Users\Application Data" that points to "C:\Program Data" so using CSIDL_COMMON_APPDATA just works.
+'http://www.mztools.com/articles/2008/MZ2008001.aspx
