@@ -163,6 +163,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AddonBuildAction\AddonBuildAction.csproj">
+      <Project>{B8174B62-351D-4663-8F09-9E59F76A9264}</Project>
+      <Name>AddonBuildAction</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NRefactory\NRefactory.csproj">
       <Project>{3A9AE6AA-BC07-4A2F-972C-581E3AE2F195}</Project>
       <Name>NRefactory</Name>

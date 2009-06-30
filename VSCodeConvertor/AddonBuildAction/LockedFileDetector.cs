@@ -10,8 +10,40 @@ using System.Text;
 using System.Threading;
 using Microsoft.Win32.SafeHandles;
 
-namespace VmcController.Services
-{
+
+    public class InfoWrapper
+    {
+        public FileSystemInfo WrappedObject
+        {
+            get;
+            private set;
+        }
+        public bool CloseHandle()
+        {
+            SafeProcessHandle processHandle = 
+                NativeMethods.OpenProcess(ProcessAccessRights.PROCESS_ALL_ACCESS, false, this.SourceProcess);
+            SafeObjectHandle objectHandle = null;
+            NativeMethods.DuplicateHandle(processHandle.DangerousGetHandle(), SourceHandle, IntPtr.Zero, out objectHandle, 0, false, DuplicateHandleOptions.DUPLICATE_CLOSE_SOURCE);
+            NativeMethods.CloseHandle(processHandle.DangerousGetHandle());
+            return true;
+        }
+        public int SourceProcess
+        {
+            get;
+            private set;
+        }
+        public IntPtr SourceHandle
+        {
+            get;
+            private set;
+        }
+        public InfoWrapper(FileSystemInfo sourceObject,int sourceProcess,IntPtr sourceHandle)
+        {
+            this.WrappedObject = sourceObject;
+            this.SourceProcess = sourceProcess;
+            this.SourceHandle = sourceHandle;
+        }
+    }
     #region ENUMs
     internal enum NT_STATUS
     {
@@ -46,7 +78,8 @@ namespace VmcController.Services
     [Flags]
     internal enum ProcessAccessRights
     {
-        PROCESS_DUP_HANDLE = 0x00000040
+        PROCESS_DUP_HANDLE = 0x00000040,
+        PROCESS_ALL_ACCESS = 0x001F0FFF
     }
 
     [Flags]
@@ -219,12 +252,12 @@ namespace VmcController.Services
         /// </summary> 
         /// <param name="processId">The process id.</param> 
         /// <returns></returns> 
-        public static IEnumerator<FileSystemInfo> GetOpenFilesEnumerator(int processId)
+        public static IEnumerator<InfoWrapper> GetOpenFilesEnumerator(int processId)
         {
             return new OpenFiles(processId).GetEnumerator();
         }
 
-        private sealed class OpenFiles : IEnumerable<FileSystemInfo>
+        private sealed class OpenFiles : IEnumerable<InfoWrapper>
         {
             private readonly int processId;
 
@@ -235,7 +268,7 @@ namespace VmcController.Services
 
             #region IEnumerable<FileSystemInfo> Members
 
-            public IEnumerator<FileSystemInfo> GetEnumerator()
+            public IEnumerator<InfoWrapper> GetEnumerator()
             {
                 NT_STATUS ret;
                 int length = 0x10000;
@@ -287,11 +320,11 @@ namespace VmcController.Services
                                             {
                                                 if (File.Exists(dosPath))
                                                 {
-                                                    yield return new FileInfo(dosPath);
+                                                    yield return new InfoWrapper(new FileInfo(dosPath), this.processId, handle);
                                                 }
                                                 else if (Directory.Exists(dosPath))
                                                 {
-                                                    yield return new DirectoryInfo(dosPath);
+                                                    yield return new InfoWrapper(new DirectoryInfo(dosPath), this.processId, handle);
                                                 }
                                             }
                                         }
@@ -640,4 +673,3 @@ namespace VmcController.Services
 
         #endregion
     }
-}
