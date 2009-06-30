@@ -9,10 +9,24 @@ using System.Security.Permissions;
 using System.Text;
 using System.Threading;
 using Microsoft.Win32.SafeHandles;
+using System.Diagnostics;
 
-
+    public sealed class InfoWrapperExtended : InfoWrapper
+    {
+        public InfoWrapperExtended(FileSystemInfo sourceObject, 
+                                   int sourceProcess, 
+                                   IntPtr sourceHandle):
+               base(sourceObject,sourceProcess,sourceHandle)
+        {
+        }
+    }
     public class InfoWrapper
     {
+        public bool IsHandleClosed
+        {
+            get;
+            private set;
+        }
         public FileSystemInfo WrappedObject
         {
             get;
@@ -20,12 +34,31 @@ using Microsoft.Win32.SafeHandles;
         }
         public bool CloseHandle()
         {
-            SafeProcessHandle processHandle = 
-                NativeMethods.OpenProcess(ProcessAccessRights.PROCESS_ALL_ACCESS, false, this.SourceProcess);
-            SafeObjectHandle objectHandle = null;
-            NativeMethods.DuplicateHandle(processHandle.DangerousGetHandle(), SourceHandle, IntPtr.Zero, out objectHandle, 0, false, DuplicateHandleOptions.DUPLICATE_CLOSE_SOURCE);
-            NativeMethods.CloseHandle(processHandle.DangerousGetHandle());
-            return true;
+            if (!IsHandleClosed)
+            {
+                using (SafeProcessHandle processHandle =
+                    NativeMethods.OpenProcess(ProcessAccessRights.PROCESS_ALL_ACCESS,
+                                              false, SourceProcess))
+                {
+                    if (!processHandle.IsInvalid)
+                    {
+                        SafeObjectHandle objectHandle = null;
+                        if (NativeMethods.DuplicateHandle(processHandle.DangerousGetHandle(), 
+                                                          SourceHandle, 
+                                                          IntPtr.Zero, 
+                                                          out objectHandle, 
+                                                          0, 
+                                                          false, 
+                                                          DuplicateHandleOptions.DUPLICATE_CLOSE_SOURCE))
+                        {
+                            NativeMethods.CloseHandle(processHandle.DangerousGetHandle());
+                            processHandle.Dispose();
+                            IsHandleClosed = true;        
+                        }
+                    }
+                }
+            }
+            return IsHandleClosed;
         }
         public int SourceProcess
         {
@@ -246,7 +279,6 @@ using Microsoft.Win32.SafeHandles;
             public int ObjectPointer;
             public int AccessMask;
         }
-
         /// <summary> 
         /// Gets the open files enumerator. 
         /// </summary> 
@@ -256,20 +288,49 @@ using Microsoft.Win32.SafeHandles;
         {
             return new OpenFiles(processId).GetEnumerator();
         }
+        /// <summary> 
+        /// Gets the open files enumerator. 
+        /// </summary> 
+        /// <param name="processName">The process name.</param> 
+        /// <returns></returns> 
+        public static IEnumerator<InfoWrapper> GetOpenFilesEnumerator(string processName)
+        {
+            Process[] targetProcess =
+                Process.GetProcessesByName(processName);
+            Debug.Assert(targetProcess != null && targetProcess.Length > 0);
+            using (Process realTargetProcess = targetProcess[0])
+            {
+                return GetOpenFilesEnumerator(realTargetProcess.Id);
+            }
+        }
 
-        private sealed class OpenFiles : IEnumerable<InfoWrapper>
+        public static IEnumerator<InfoWrapperExtended> GetOpenHandlesForFile(string fileName)
+        {
+            return ((IEnumerable<InfoWrapperExtended>)new OpenFiles(fileName)).GetEnumerator();
+        }
+
+        private sealed class OpenFiles : IEnumerable<InfoWrapper>,IEnumerable<InfoWrapperExtended>
         {
             private readonly int processId;
-
+            private readonly string fileName;
             internal OpenFiles(int processId)
             {
                 this.processId = processId;
+            }
+            internal OpenFiles(string fileName)
+            {
+                if (String.IsNullOrEmpty(fileName))
+                    new ArgumentNullException(fileName, "File Name Cannot Be Nothing");
+                this.fileName = fileName.ToLowerInvariant();
+                this.processId = -1;
             }
 
             #region IEnumerable<FileSystemInfo> Members
 
             public IEnumerator<InfoWrapper> GetEnumerator()
             {
+                if (processId == -1)
+                    throw new ArgumentNullException("processId");
                 NT_STATUS ret;
                 int length = 0x10000;
                 // Loop, probing for required memory. 
@@ -291,7 +352,8 @@ using Microsoft.Win32.SafeHandles;
                             ptr = Marshal.AllocHGlobal(length);
                         }
                         int returnLength;
-                        ret = NativeMethods.NtQuerySystemInformation(SYSTEM_INFORMATION_CLASS.SystemHandleInformation, ptr, length, out returnLength);
+                        ret = NativeMethods.NtQuerySystemInformation(SYSTEM_INFORMATION_CLASS.SystemHandleInformation,
+                                                                     ptr, length, out returnLength);
                         if (ret == NT_STATUS.STATUS_INFO_LENGTH_MISMATCH)
                         {
                             // Round required memory up to the nearest 64KB boundary. 
@@ -353,6 +415,87 @@ using Microsoft.Win32.SafeHandles;
             System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
             {
                 return GetEnumerator();
+            }
+
+            #endregion
+
+            #region IEnumerable<InfoWrapperExtended> Members
+
+            IEnumerator<InfoWrapperExtended> IEnumerable<InfoWrapperExtended>.GetEnumerator()
+            {
+                if (String.IsNullOrEmpty(fileName))
+                    new ArgumentNullException(fileName, "File Name Cannot Be Nothing");
+                NT_STATUS ret;
+                int length = 0x10000;
+                // Loop, probing for required memory. 
+
+
+                do
+                {
+                    IntPtr ptr = IntPtr.Zero;
+                    RuntimeHelpers.PrepareConstrainedRegions();
+                    try
+                    {
+                        RuntimeHelpers.PrepareConstrainedRegions();
+                        try { }
+                        finally
+                        {
+                            // CER guarantees that the address of the allocated  
+                            // memory is actually assigned to ptr if an  
+                            // asynchronous exception occurs. 
+                            ptr = Marshal.AllocHGlobal(length);
+                        }
+                        int returnLength;
+                        ret = NativeMethods.NtQuerySystemInformation(SYSTEM_INFORMATION_CLASS.SystemHandleInformation,
+                                                                     ptr, length, out returnLength);
+                        if (ret == NT_STATUS.STATUS_INFO_LENGTH_MISMATCH)
+                        {
+                            // Round required memory up to the nearest 64KB boundary. 
+                            length = ((returnLength + 0xffff) & ~0xffff);
+                        }
+                        else if (ret == NT_STATUS.STATUS_SUCCESS)
+                        {
+                            int handleCount = Marshal.ReadInt32(ptr);
+                            int offset = sizeof(int);
+                            int size = Marshal.SizeOf(typeof(SYSTEM_HANDLE_ENTRY));
+                            for (int i = 0; i < handleCount; i++)
+                            {
+                                SYSTEM_HANDLE_ENTRY handleEntry = (SYSTEM_HANDLE_ENTRY)Marshal.PtrToStructure((IntPtr)((int)ptr + offset), typeof(SYSTEM_HANDLE_ENTRY));
+                                    IntPtr handle = (IntPtr)handleEntry.HandleValue;
+                                    SystemHandleType handleType;
+
+                                    if (GetHandleType(handle, handleEntry.OwnerPid, out handleType) && handleType == SystemHandleType.OB_TYPE_FILE)
+                                    {
+                                        string devicePath;
+                                        if (GetFileNameFromHandle(handle, handleEntry.OwnerPid, out devicePath))
+                                        {
+                                            string dosPath;
+                                            if (ConvertDevicePathToDosPath(devicePath, out dosPath) && 
+                                                dosPath.ToLowerInvariant().EndsWith(fileName))
+                                            {
+                                                    if (File.Exists(dosPath))
+                                                    {
+                                                        yield return new InfoWrapperExtended(new FileInfo(dosPath), this.processId, handle);
+                                                    }
+                                                    else if (Directory.Exists(dosPath))
+                                                    {
+                                                        yield return new InfoWrapperExtended(new DirectoryInfo(dosPath), this.processId, handle);
+                                                    }
+                                            }
+                                        }
+                                    }
+                                offset += size;
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        // CER guarantees that the allocated memory is freed,  
+                        // if an asynchronous exception occurs.  
+                        Marshal.FreeHGlobal(ptr);
+                    }
+                }
+                while (ret == NT_STATUS.STATUS_INFO_LENGTH_MISMATCH);
             }
 
             #endregion
