@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRefactory", "NRefactory\NR
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "CodeConvertSetup", "CodeConvertSetup\CodeConvertSetup.vdproj", "{0BD0C307-E4D1-4D82-B687-665D8668363A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddonBuildAction", "AddonBuildAction\AddonBuildAction.csproj", "{B8174B62-351D-4663-8F09-9E59F76A9264}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LockedFileDetector", "AddonBuildAction\LockedFileDetector.csproj", "{B8174B62-351D-4663-8F09-9E59F76A9264}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiTester", "ApiTester\ApiTester.csproj", "{7A342210-E39C-4C03-9D1C-D20575CF6583}"
 EndProject
@@ -18,26 +18,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 6
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs06.codeplex.com/
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = CodeConvert\\CodeConvert.vbproj
-		SccProjectName1 = CodeConvert
-		SccLocalPath1 = CodeConvert
-		SccProjectUniqueName2 = NRefactory\\NRefactory.csproj
-		SccProjectName2 = NRefactory
-		SccLocalPath2 = NRefactory
-		SccProjectUniqueName3 = CodeConvertSetup\\CodeConvertSetup.vdproj
-		SccProjectName3 = CodeConvertSetup
-		SccLocalPath3 = CodeConvertSetup
-		SccProjectUniqueName4 = AddonBuildAction\\AddonBuildAction.csproj
-		SccProjectName4 = AddonBuildAction
-		SccLocalPath4 = AddonBuildAction
-		SccProjectUniqueName5 = ApiTester\\ApiTester.csproj
-		SccProjectName5 = ApiTester
-		SccLocalPath5 = ApiTester
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = VSCodeConvertor.vsmdi
@@ -68,5 +51,26 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 6
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs06.codeplex.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = CodeConvert\\CodeConvert.vbproj
+		SccProjectName1 = CodeConvert
+		SccLocalPath1 = CodeConvert
+		SccProjectUniqueName2 = NRefactory\\NRefactory.csproj
+		SccProjectName2 = NRefactory
+		SccLocalPath2 = NRefactory
+		SccProjectUniqueName3 = CodeConvertSetup\\CodeConvertSetup.vdproj
+		SccProjectName3 = CodeConvertSetup
+		SccLocalPath3 = CodeConvertSetup
+		SccProjectUniqueName4 = AddonBuildAction\\AddonBuildAction.csproj
+		SccProjectName4 = AddonBuildAction
+		SccLocalPath4 = AddonBuildAction
+		SccProjectUniqueName5 = ApiTester\\ApiTester.csproj
+		SccProjectName5 = ApiTester
+		SccLocalPath5 = ApiTester
 	EndGlobalSection
 EndGlobal

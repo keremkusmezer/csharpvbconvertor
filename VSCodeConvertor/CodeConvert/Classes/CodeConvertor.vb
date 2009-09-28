@@ -6,6 +6,9 @@ Imports EnvDTE80
 Imports System.Diagnostics
 #End Region
 Public Module CodeConvertor
+    ''' <summary>
+    ''' Converts to csharp and vb.
+    ''' </summary>
     Sub ConvertToCsharpAndVb()
         Dim targetBody As String = String.Empty
         If Connect.DTE.ActiveDocument IsNot Nothing Then            
@@ -30,7 +33,15 @@ Public Module CodeConvertor
             End If
         End If
     End Sub
+    ''' <summary>
+    ''' Using Clipboard In Visual Studio Addons Is Problematic There This Class Does
+    ''' Crete A New Single Thread Apartment Model Thread, And Runs The Clipboard Request Inside It
+    ''' </summary>
     Public Class ClipboardHelper
+        ''' <summary>
+        ''' Sets the clipboard text.
+        ''' </summary>
+        ''' <param name="sourceText">The source text.</param>
         Public Sub SetClipboardText(ByVal sourceText As String)
             Dim setterThread As New Threading.Thread(AddressOf SetClipboardTextInternal)
             With setterThread
@@ -40,10 +51,19 @@ Public Module CodeConvertor
                 .Join()
             End With
         End Sub
+        ''' <summary>
+        ''' Sets the clipboard text internal.
+        ''' </summary>
+        ''' <param name="sourceText">The source text.</param>
         Private Sub SetClipboardTextInternal(ByVal sourceText As Object)
             System.Windows.Forms.Clipboard.SetText(CType(sourceText, String))
         End Sub
     End Class
+    ''' <summary>
+    ''' Removes the bar if exists.
+    ''' </summary>
+    ''' <param name="barName">Name of the bar.</param>
+    ''' <param name="sourceBar">The source bar.</param>
     Public Sub RemoveBarIfExists(ByVal barName As String, ByVal sourceBar As Microsoft.VisualStudio.CommandBars.CommandBar)
         For i As Integer = sourceBar.Controls.Count To 1 Step -1
             If sourceBar.Controls(i).Caption = barName Then
@@ -56,6 +76,12 @@ Public Module CodeConvertor
             End If
         Next
     End Sub
+    ''' <summary>
+    ''' Checks the bar for existence.
+    ''' </summary>
+    ''' <param name="barName">Name of the bar.</param>
+    ''' <param name="sourceBar">The source bar.</param>
+    ''' <returns></returns>
     Public Function CheckBarForExistence(ByVal barName As String, ByVal sourceBar As Microsoft.VisualStudio.CommandBars.CommandBar) As Microsoft.VisualStudio.CommandBars.CommandBarButton
         Dim sourceButtonItem As Microsoft.VisualStudio.CommandBars.CommandBarButton = Nothing
         Dim foundAlready As Boolean
@@ -80,24 +106,23 @@ Public Module CodeConvertor
         End If
         Return sourceButtonItem
     End Function
+    ''' <summary>
+    ''' 
+    ''' </summary>
     Public Class ConversionLoader
-        ''Private Shared ConvertToCsharpDelegate As ConvertLanguage
-        ''Private Shared ConvertToVbDelegate As ConvertLanguage
-        ''Private Delegate Function ConvertLanguage(ByVal source As String) As String
-        'Shared Sub New()
-        '    'Dim currentFile As System.Reflection.Assembly = Assembly.Load(Convert.FromBase64String(AssemblyStorage.RetrieveAssembly()))
-        '    'Dim convertorType As Type = currentFile.GetType("ConversionWrapper.CodeConversionHelper", False, True)
-        '    'If convertorType IsNot Nothing Then
-        '    '    'Dim firstDelegate As [Delegate]
-        '    '    Dim sourceMethod As MethodInfo = convertorType.GetMethod("ConvertCSharpToVB", BindingFlags.Static Or BindingFlags.Public)
-        '    '    ConvertToVbDelegate = CType([Delegate].CreateDelegate(GetType(ConvertLanguage), sourceMethod), ConvertLanguage)
-        '    '    sourceMethod = convertorType.GetMethod("ConvertVBToCSharp", BindingFlags.Static Or BindingFlags.Public)
-        '    '    ConvertToCsharpDelegate = CType([Delegate].CreateDelegate(GetType(ConvertLanguage), sourceMethod), ConvertLanguage)
-        '    'End If
-        'End Sub
+        ''' <summary>
+        ''' Converts the C sharp to VB.
+        ''' </summary>
+        ''' <param name="sourceCode">The source code.</param>
+        ''' <returns></returns>
         Public Shared Function ConvertCSharpToVB(ByVal sourceCode As String) As String
             Return ConversionWrapper.CodeConversionHelper.ConvertCSharpToVB(sourceCode)
         End Function
+        ''' <summary>
+        ''' Converts the VB to C sharp.
+        ''' </summary>
+        ''' <param name="sourceCode">The source code.</param>
+        ''' <returns></returns>
         Public Shared Function ConvertVBToCSharp(ByVal sourceCode As String) As String
             Return ConversionWrapper.CodeConversionHelper.ConvertVBToCSharp(sourceCode)
         End Function

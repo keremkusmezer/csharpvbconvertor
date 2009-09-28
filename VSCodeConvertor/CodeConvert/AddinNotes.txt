@@ -9,3 +9,7 @@ How to get it:
 - Windows XP: replace the %ALLUSERSPROFILE% placeholder, append it "Application Data" (even in non-English versions of Windows XP) and then append "\Microsoft\MSEnvShared\AddIns". Do not use CSIDL_COMMON_APPDATA because it would return "C:\Documents and Settings\All Users\Datos de programa" in Spanish , for example, and Visual Studio will not search in that folder. 
 - Windows Vista: use CSIDL_COMMON_APPDATA and then append "\Microsoft\MSEnvShared\AddIns". Notice that Windows Vista uses a junction point (a new feature of Windows Vista that is a hidden pointer to a folder) from "C:\Users\All Users\Application Data" that points to "C:\Program Data" so using CSIDL_COMMON_APPDATA just works.
 'http://www.mztools.com/articles/2008/MZ2008001.aspx
+
+TODO LIST:
++Add Solution or Project Based Conversion.
++Add Project Type Detection

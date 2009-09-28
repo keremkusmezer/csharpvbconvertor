@@ -3,9 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 
 namespace ApiTester
-{
-    
-    
+{        
     /// <summary>
     ///This is a test class for DetectOpenFilesTest and is intended
     ///to contain all DetectOpenFilesTest Unit Tests
