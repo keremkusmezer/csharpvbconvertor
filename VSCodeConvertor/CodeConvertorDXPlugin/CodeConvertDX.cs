@@ -16,8 +16,19 @@ namespace CodeConvertorDXPlugin
 {
     public partial class CodeConvertDX : StandardPlugIn
     {
-          // Fields
-    [AccessedThroughProperty("PasteSmartTag")]
+
+        //public SmartTagProvider PasteSmartTag
+        //{
+        //    get
+        //    {
+        //        return _PasteSmartTag;
+        //    }
+        //    set
+        //    {
+        //        _PasteSmartTag = value;
+        //    }
+        //}
+
     private SmartTagProvider _PasteSmartTag;
     private IContainer components;
 
@@ -48,7 +59,8 @@ namespace CodeConvertorDXPlugin
     {
         this.components = new Container();
         this.PasteSmartTag = new SmartTagProvider(this.components);
-        //this.PasteSmartTag.BeginInit();
+        
+        ((ISupportInitialize)this.PasteSmartTag).BeginInit();
         this.BeginInit();
         this.PasteSmartTag.Description = "Paste";// ("Paste");
         this.PasteSmartTag.DisplayName = "Paste";
@@ -57,8 +69,9 @@ namespace CodeConvertorDXPlugin
         this.PasteSmartTag.Register = true;
         this.PasteSmartTag.ShowInContextMenu = true;
         this.PasteSmartTag.ShowInPopupMenu = false;
-        //this.PasteSmartTag.EndInit();
-        //this.EndInit();
+        ((ISupportInitialize)this.PasteSmartTag).EndInit();
+        this.PasteSmartTag.GetSmartTagItems += new GetSmartTagItemsEventHandler(PasteSmartTag_GetSmartTagItems);
+        this.EndInit();
     }
 
     public override void InitializePlugIn()
@@ -73,51 +86,37 @@ namespace CodeConvertorDXPlugin
 
     private void PasteSmartTag_GetSmartTagItems(object sender, GetSmartTagItemsEventArgs ea)
     {
-        SmartTagItem item2 = new SmartTagItem("Smart Paste");
-        SmartTagItem item = new SmartTagItem("CSharp -> VBNet");
-        SmartTagItem item3 = new SmartTagItem("VBNet -> CSharp");
+        SmartTagItem item2 = new SmartTagItemEx("Smart Paste", new MethodInvoker(SmartPaste));
+        SmartTagItem item = new SmartTagItemEx("CSharp -> VBNet", new MethodInvoker(PasteCSharpAsVBNet));
+        SmartTagItem item3 = new SmartTagItemEx("VBNet -> CSharp", new MethodInvoker(PasteVBNetAsCSharp));
         ea.Add(item2);
         ea.Add(item);
         ea.Add(item3);
-        item2.Execute += new EventHandler(this.PasteCSharpAsVBNet);
-        //item2.add_Execute();
-        item.Execute += (new EventHandler(this.PasteCSharpAsVBNet));
-        item3.Execute += (new EventHandler(this.PasteVBNetAsCSharp));
     }
 
-    private void PasteVBNetAsCSharp(object sender, EventArgs e)
+    /// <summary>
+    /// Pastes the C sharp as VB net.
+    /// </summary>
+    private void PasteCSharpAsVBNet()
+    {
+        new GenericDXTranslator("CSharp", "Basic").Paste();
+    }
+    /// <summary>
+    /// Pastes the VB net as C sharp.
+    /// </summary>
+    private void PasteVBNetAsCSharp()
     {
         new GenericDXTranslator("CSharp", "Basic").Paste();
     }
 
-    private void SmartPaste(object sender, EventArgs e)
+    /// <summary>
+    /// Smarts the paste.
+    /// </summary>
+    private void SmartPaste()
     {
         new GenericDXTranslator(CodeRush.Documents.ActiveLanguage, "").Paste();
     }
+    private DevExpress.CodeRush.Core.SmartTagProvider PasteSmartTag;
 
-    // Properties
-    internal virtual SmartTagProvider PasteSmartTag
-    {
-        get
-        {
-            return this._PasteSmartTag;
-        }
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        set
-        {
-            GetSmartTagItemsEventHandler handler = 
-                new GetSmartTagItemsEventHandler(PasteSmartTag_GetSmartTagItems);
-            if (this._PasteSmartTag != null)
-            {
-                this._PasteSmartTag.GetSmartTagItems -= handler;
-                //this._PasteSmartTag.remove_GetSmartTagItems(handler);
-            }
-            this._PasteSmartTag = value;
-            if (this._PasteSmartTag != null)
-            {
-                this._PasteSmartTag.GetSmartTagItems += (handler);
-            }
-        }
-    }
 }
 }
