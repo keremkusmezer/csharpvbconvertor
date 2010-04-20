@@ -1,6 +1,12 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{01DE5124-D912-45D1-89FF-9EDA02C8380D}"
+	ProjectSection(SolutionItems) = preProject
+		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
+		VSCodeConvertor.vsmdi = VSCodeConvertor.vsmdi
+	EndProjectSection
+EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CodeConvert", "CodeConvert\CodeConvert.vbproj", "{4BF9975F-1294-404A-AB7F-1C1FFDCE3C1A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRefactory", "NRefactory\NRefactory.csproj", "{3A9AE6AA-BC07-4A2F-972C-581E3AE2F195}"
@@ -10,14 +16,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LockedFileDetector", "AddonBuildAction\LockedFileDetector.csproj", "{B8174B62-351D-4663-8F09-9E59F76A9264}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiTester", "ApiTester\ApiTester.csproj", "{7A342210-E39C-4C03-9D1C-D20575CF6583}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{01DE5124-D912-45D1-89FF-9EDA02C8380D}"
-	ProjectSection(SolutionItems) = preProject
-		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
-		VSCodeConvertor.vsmdi = VSCodeConvertor.vsmdi
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeConvertorDXPlugin", "CodeConvertorDXPlugin\CodeConvertorDXPlugin.csproj", "{16B7A90A-459A-4D3F-A7FD-BE32C911E3CA}"
 EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
@@ -50,33 +48,8 @@ Global
 		{7A342210-E39C-4C03-9D1C-D20575CF6583}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A342210-E39C-4C03-9D1C-D20575CF6583}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A342210-E39C-4C03-9D1C-D20575CF6583}.Release|Any CPU.Build.0 = Release|Any CPU
-		{16B7A90A-459A-4D3F-A7FD-BE32C911E3CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{16B7A90A-459A-4D3F-A7FD-BE32C911E3CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{16B7A90A-459A-4D3F-A7FD-BE32C911E3CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{16B7A90A-459A-4D3F-A7FD-BE32C911E3CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 6
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs06.codeplex.com/
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = CodeConvert\\CodeConvert.vbproj
-		SccProjectName1 = CodeConvert
-		SccLocalPath1 = CodeConvert
-		SccProjectUniqueName2 = NRefactory\\NRefactory.csproj
-		SccProjectName2 = NRefactory
-		SccLocalPath2 = NRefactory
-		SccProjectUniqueName3 = CodeConvertSetup\\CodeConvertSetup.vdproj
-		SccProjectName3 = CodeConvertSetup
-		SccLocalPath3 = CodeConvertSetup
-		SccProjectUniqueName4 = AddonBuildAction\\AddonBuildAction.csproj
-		SccProjectName4 = AddonBuildAction
-		SccLocalPath4 = AddonBuildAction
-		SccProjectUniqueName5 = ApiTester\\ApiTester.csproj
-		SccProjectName5 = ApiTester
-		SccLocalPath5 = ApiTester
 	EndGlobalSection
 EndGlobal

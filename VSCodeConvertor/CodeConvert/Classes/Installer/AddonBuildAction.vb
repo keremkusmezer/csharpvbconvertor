@@ -8,15 +8,13 @@ Imports System.Reflection
 Imports System.Diagnostics
 #End Region
 Namespace AddonBuildAction
-    ''' <summary>
-    ''' 
-    ''' </summary>
     <System.ComponentModel.RunInstaller(True)> _
     Public Class AddInstaller
         Inherits System.Configuration.Install.Installer
         Private Const AddinSubPath As String = "Application Data\Microsoft\MSEnvShared\AddIns"
         Private Const Addin2005Path As String = "Visual Studio 2005\AddIns"
         Private Const Addin2008Path As String = "Visual Studio 2008\AddIns"
+        Private Const Addin2010Path As String = "Visual Studio 2010\AddIns"
         Private Const AllUsersProfile As String = "ALLUSERSPROFILE"
         ''' <summary>
         ''' Nts the query system information.
@@ -87,13 +85,18 @@ Namespace AddonBuildAction
                 End Try
             Else
                 'This Handles Vista Based Install Paths
-                allusersProfilePath = _
+                allusersProfilePath =
                     Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Addin2005Path)
                 CopyToTargetPath(allusersProfilePath)
-                allusersProfilePath = _
+                allusersProfilePath =
                     Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Addin2008Path)
+                CopyToTargetPath(allusersProfilePath)
+                allusersProfilePath =
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Addin2010Path)
             End If
-            CopyToTargetPath(allusersProfilePath)
+            If Not String.IsNullOrEmpty(allusersProfilePath) Then
+                CopyToTargetPath(allusersProfilePath)
+            End If
         End Sub
         ''' <summary>
         ''' Copies to target path.
